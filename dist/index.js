@@ -9725,7 +9725,7 @@ const run = async () => {
   try{
 
     //comment
-    let comment = new Comment('[SonarQube Check Result]')
+    let comment = new Comment('### SonarQube Check Result')
     
     //get task file
     const taskFilePath = '.scannerwork/report-task.txt'
@@ -9739,21 +9739,31 @@ const run = async () => {
     const ceTaskUrl = taskFileString.split('ceTaskUrl=')[1].replace(/\\r\\n/g, '')
     const taskInfo = await getTaskInfo(ceTaskUrl)
 
-    comment.add(`Result : ${taskInfo.status}`)
+    comment.add('```java')
+    comment.add(`Task : ${taskInfo.status}`)
+    
 
     //task detail get
     const taskDetail = await getTaskDetail(taskInfo.componentKey)
+    comment.add(`Result : ${Number(taskDetail.baseComponent.measures[0].value) > 0?'Failed':'Passed'}`)
+    comment.add('```')
     comment.add('')
-    comment.add('[Summary]')
+    comment.add('### Summary')
+    comment.add('```java')
     comment.add(`Check Total : ${taskDetail.paging.total}`)
     comment.add(`Bugs  Total : ${taskDetail.baseComponent.measures[0].value}`)
+    comment.add('```')
     comment.add('')
-    comment.add('[Bugs Detail]')
+    comment.add('### Bugs Detail')
+    comment.add('|File Name|Bugs|')
+    comment.add('|--|:--:|')
     taskDetail.components.forEach((elem)=>{
       if(Number(elem.measures[0].value) > 0){
-        comment.add(`${elem.path} : ${elem.measures[0].value}`)
+        comment.add(`${elem.path} | ${elem.measures[0].value}`)
       }
     })
+
+    comment.add(`>[Check SonarQube Site Here !!!](${host}/project/issues?id=${taskInfo.componentKey}&resolved=false)`)
     
     //create pr comment
     const octo = github.getOctokit(token)
