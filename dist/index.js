@@ -9507,14 +9507,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 3419:
-/***/ ((module) => {
-
-module.exports = eval("require")("@http-client");
-
-
-/***/ }),
-
 /***/ 3763:
 /***/ ((module) => {
 
@@ -9694,7 +9686,7 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(5590);
 const github = __nccwpck_require__(985);
-const http = __nccwpck_require__(3419);
+const http = __nccwpck_require__(4471);
 const fs = __nccwpck_require__(7147);
 const path = __nccwpck_require__(1017);
 
