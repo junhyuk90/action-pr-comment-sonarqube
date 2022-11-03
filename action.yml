@@ -1,0 +1,15 @@
+name: 'pr-comment-sonarqube'
+description: 'Pull Request Comment With Sonarqube Analysis'
+inputs: 
+  sonar-projectKey: 
+    required: true
+  sonar-host-url:
+    required: true
+  sonar.login:
+    required: true
+outputs:
+  comment: 
+    description: 'comment contents'
+runs: 
+  using: 'node16'
+  main: 'index.js'

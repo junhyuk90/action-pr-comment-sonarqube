@@ -1,0 +1,24 @@
+{
+  "name": "action-pr-comment-sonarqube",
+  "version": "1.0.0",
+  "description": "Github Action For Pull Request Comment With Sonarqube Analysis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juyoung-go/action-pr-comment-sonarqube.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juyoung-go/action-pr-comment-sonarqube/issues"
+  },
+  "homepage": "https://github.com/juyoung-go/action-pr-comment-sonarqube#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1"
+  }
+}
