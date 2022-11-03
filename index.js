@@ -1,14 +1,23 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const http = require('@http-client');
+const fs = require('fs');
+const path = require('path');
 
 try{
 
+  //inputs
   const key = core.getInput('sonar.projectKey');
   const host = core.getInput('sonar.host.url');
   const login = core.getInput('sonar.login');
   const token = core.getInput('github.token')
+
   console.log(`inputs => key:${key} / host:${host} / login:${login}`);
-  console.log('secrets', token);
+  
+  //get task file
+  const taskFilePath = '.scannerwork/report-task.txt'
+  const taskFileString = fs.readFileSync(path.resolve(__dirname, taskFilePath), {encoding:'utf8'})
+  console.log('taskFileString =>\n'+taskFileString);
   
   const octo = github.getOctokit(token)
 

@@ -9507,6 +9507,14 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 3419:
+/***/ ((module) => {
+
+module.exports = eval("require")("@http-client");
+
+
+/***/ }),
+
 /***/ 3763:
 /***/ ((module) => {
 
@@ -9686,15 +9694,24 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(5590);
 const github = __nccwpck_require__(985);
+const http = __nccwpck_require__(3419);
+const fs = __nccwpck_require__(7147);
+const path = __nccwpck_require__(1017);
 
 try{
 
+  //inputs
   const key = core.getInput('sonar.projectKey');
   const host = core.getInput('sonar.host.url');
   const login = core.getInput('sonar.login');
   const token = core.getInput('github.token')
+
   console.log(`inputs => key:${key} / host:${host} / login:${login}`);
-  console.log('secrets', token);
+  
+  //get task file
+  const taskFilePath = '.scannerwork/report-task.txt'
+  const taskFileString = fs.readFileSync(path.resolve(__dirname, taskFilePath), {encoding:'utf8'})
+  console.log('taskFileString =>\n'+taskFileString);
   
   const octo = github.getOctokit(token)
 

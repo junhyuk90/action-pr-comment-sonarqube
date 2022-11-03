@@ -4,6 +4,7 @@
   "description": "Github Action For Pull Request Comment With Sonarqube Analysis",
   "main": "index.js",
   "scripts": {
+    "build": "ncc build index.js --license licenses.txt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/juyoung-go/action-pr-comment-sonarqube#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@actions/github": "^5.1.1"
+    "@actions/github": "^5.1.1",
+    "@actions/http-client": "^2.0.1"
   }
 }
