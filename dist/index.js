@@ -9736,7 +9736,7 @@ const run = async () => {
     console.log('taskFileString =>\n'+taskFileString);
 
     //task status get
-    const ceTaskUrl = taskFileString.split('ceTaskUrl=')[1].replace(/\\r/g, '')
+    const ceTaskUrl = taskFileString.split('ceTaskUrl=')[1].replace(/\\r\\n/g, '')
     const taskInfo = await getTaskInfo(ceTaskUrl)
 
     comment.add(`Result : ${taskInfo.status}`)
@@ -9773,7 +9773,7 @@ const run = async () => {
 
 const getTaskDetail = async (componentKey) => {
 
-  const res = await http.get(`${host}/api/measures/component_tree?component=${componentKey}&metricKeys=bugs&qualifiers=FIL`)
+  const res = await http.get(`${host}/api/measures/component_tree?component=${componentKey}&metricKeys=bugs&qualifiers=FIL,TRK`)
   const bodyString = await res.readBody()
   console.log(`[getTaskDetail][${bodyString}] received!!!`);
   return JSON.parse(bodyString)
