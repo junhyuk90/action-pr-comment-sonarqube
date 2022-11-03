@@ -7,10 +7,10 @@ jobs:
     steps:
       - name: Hello world action step
         id: hello
-        uses: juyoung-go/action-pr-comment-sonarqube@v1.0
+        uses: juyoung-go/action-pr-comment-sonarqube@v2.0.0
         with:
-          sonar-projectKey: '나는 프로젝트키다'
-          sonar-host-url: 'ㄴㄴㄴㄴㄴ'
+          sonar.projectKey: '나는 프로젝트키다'
+          sonar.host.url: 'ㄴㄴㄴㄴㄴ'
           sonar.login: 'goju2k'
       # Use the output from the `hello` step
       - name: Get the output time
