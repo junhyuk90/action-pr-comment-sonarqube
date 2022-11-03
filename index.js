@@ -13,8 +13,8 @@ try{
   const octo = github.getOctokit(token)
 
   octo.rest.issues.create({
-    owner:'goju',
-    repo:'ui-play',
+    owner:github.context.repo.owner,
+    repo:github.context.repo.repo,
     title:'test issue from action',
     body:'hahahaha\n줄바꿈 되나??'
   })
