@@ -62,10 +62,10 @@ const run = async () => {
     comment.add(`Check Total : ${taskDetail.paging.total}`)
     comment.add(`Bugs  Total : ${taskDetail.baseComponent.measures[0].value}`)
     comment.add('')
-    comment.add('[Details]')
+    comment.add('[Bugs Detail]')
     taskDetail.components.forEach((elem)=>{
       if(Number(elem.measures[0].value) > 0){
-        comment.add(`${elem.path} : ${taskDetail.paging.total}`)
+        comment.add(`${elem.path} : ${elem.measures[0].value}`)
       }
     })
     
@@ -87,7 +87,7 @@ const run = async () => {
 
 const getTaskDetail = async (componentKey) => {
 
-  const res = await http.get(`http://34.64.90.204:9000/api/measures/component_tree?component=${componentKey}&metricKeys=bugs`)
+  const res = await http.get(`${host}/api/measures/component_tree?component=${componentKey}&metricKeys=bugs&qualifiers=FIL`)
   const bodyString = await res.readBody()
   console.log(`[getTaskDetail][${bodyString}] received!!!`);
   return JSON.parse(bodyString)
