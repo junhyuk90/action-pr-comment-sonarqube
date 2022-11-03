@@ -3,8 +3,8 @@ const github = require('@actions/github');
 
 try{
 
-  const key = core.getInput('sonar-projectKey');
-  const host = core.getInput('sonar-host-url');
+  const key = core.getInput('sonar.projectKey');
+  const host = core.getInput('sonar.host.url');
   const login = core.getInput('sonar.login');
   console.log(`inputs => ${key} / ${host} / ${login}`);
   const time = (new Date()).toTimeString();
