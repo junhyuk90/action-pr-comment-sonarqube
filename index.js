@@ -12,10 +12,10 @@ try{
   
   const octo = github.getOctokit(token)
 
-  octo.rest.pulls.createReviewComment({
-    owner:github.context.repo.owner,
-    repo:github.context.repo.repo,
-    pull_number:github.context.payload.pull_request.number,
+  octo.rest.issues.createComment({
+    owner:github.context.issue.owner,
+    repo:github.context.issue.repo,
+    issue_number:github.context.issue.number,
     title:'test issue from action',
     body:'hahahaha\n줄바꿈 되나??'
   })
