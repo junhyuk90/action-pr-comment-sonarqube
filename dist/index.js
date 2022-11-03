@@ -9735,7 +9735,7 @@ const checkTaskStatus = async (ceTaskUrl, token) => {
   return new Promise((resolve)=>{
 
     const authHandler = new BearerCredentialHandler(token)
-    const http = new HttpClient('github-action', authHandler)
+    const http = new HttpClient('github-action', [authHandler])
   
     const startTime = new Date().getTime()
     const inter = setInterval(async ()=>{
