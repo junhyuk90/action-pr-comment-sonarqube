@@ -15,9 +15,11 @@ try{
   console.log(`inputs => key:${key} / host:${host} / login:${login}`);
   
   //get task file
-  const taskFilePath = '../.scannerwork/report-task.txt'
+  const taskFilePath = '.scannerwork/report-task.txt'
+  const homePath = `/home/runner/work/${github.context.issue.repo}/${github.context.issue.repo}`
+  console.log('home path => '+homePath);
   console.log('find taskFile => '+taskFilePath);
-  const taskFileString = fs.readFileSync(path.resolve(__dirname, taskFilePath), {encoding:'utf8'})
+  const taskFileString = fs.readFileSync(path.resolve(home, taskFilePath), {encoding:'utf8'})
   console.log('taskFileString =>\n'+taskFileString);
   
   const octo = github.getOctokit(token)
