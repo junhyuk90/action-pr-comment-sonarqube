@@ -1,9 +1,9 @@
 name: 'pr-comment-sonarqube'
 description: 'Pull Request Comment With Sonarqube Analysis'
 inputs: 
-  sonar-projectKey: 
+  sonar.projectKey: 
     required: true
-  sonar-host-url:
+  sonar.host.url:
     required: true
   sonar.login:
     required: true
