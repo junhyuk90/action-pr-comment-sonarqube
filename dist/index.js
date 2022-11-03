@@ -9687,7 +9687,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(5590);
 const github = __nccwpck_require__(985);
 const {HttpClient} = __nccwpck_require__(4471);
-const {BearerCredentialHandler} = __nccwpck_require__(5213);
+const {BasicCredentialHandler} = __nccwpck_require__(5213);
 const fs = __nccwpck_require__(7147);
 const path = __nccwpck_require__(1017);
 
@@ -9734,7 +9734,7 @@ const checkTaskStatus = async (ceTaskUrl, token) => {
 
   return new Promise((resolve)=>{
 
-    const authHandler = new BearerCredentialHandler(token)
+    const authHandler = new BasicCredentialHandler(token)
     const http = new HttpClient('github-action', [authHandler])
   
     const startTime = new Date().getTime()

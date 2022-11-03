@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const {HttpClient} = require('@actions/http-client');
-const {BearerCredentialHandler} = require('@actions/http-client/lib/auth');
+const {BasicCredentialHandler} = require('@actions/http-client/lib/auth');
 const fs = require('fs');
 const path = require('path');
 
@@ -48,7 +48,7 @@ const checkTaskStatus = async (ceTaskUrl, token) => {
 
   return new Promise((resolve)=>{
 
-    const authHandler = new BearerCredentialHandler(token)
+    const authHandler = new BasicCredentialHandler(token)
     const http = new HttpClient('github-action', [authHandler])
   
     const startTime = new Date().getTime()
