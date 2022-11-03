@@ -62,7 +62,7 @@ const checkTaskStatus = async (ceTaskUrl, token) => {
       console.log(`[${ceTaskUrl}] send!!!`);
       const res = await http.get(ceTaskUrl)
       const bodyString = await res.readBody()
-      
+      console.log(`[${bodyString}] received!!!`);
       const body = JSON.parse(bodyString)
       console.log(`[${ceTaskUrl}]\n${JSON.stringify(body, undefined, 2)}`);
 
