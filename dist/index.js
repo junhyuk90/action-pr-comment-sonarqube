@@ -9701,7 +9701,7 @@ const token = core.getInput('github.token')
 console.log(`inputs => key:${key} / host:${host} / login:${login}`);
 
 //http
-const authHandler = new BasicCredentialHandler(token, "")
+const authHandler = new BasicCredentialHandler(login, "")
 const http = new HttpClient('github-action', [authHandler])
 
 class Comment {
