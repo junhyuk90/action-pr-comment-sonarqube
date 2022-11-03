@@ -9740,12 +9740,13 @@ const run = async () => {
     const taskInfo = await getTaskInfo(ceTaskUrl)
 
     comment.add('```java')
-    comment.add(`Task : ${taskInfo.status}`)
+    comment.add(`Task   : ${taskInfo.status}`)
     
 
     //task detail get
     const taskDetail = await getTaskDetail(taskInfo.componentKey)
-    comment.add(`Result : ${Number(taskDetail.baseComponent.measures[0].value) > 0?'Failed':'Passed'}`)
+    const failed = Number(taskDetail.baseComponent.measures[0].value) > 0
+    comment.add(`Result : ${failed?'FAIL':'PASS'}`)
     comment.add('```')
     comment.add('')
     comment.add('### Summary')
@@ -9775,6 +9776,10 @@ const run = async () => {
       title:'test issue from action',
       body:comment.toString()
     })
+
+    if(failed){
+      core.setFailed('SonarQube Check Result Failed !!!');
+    }
 
   }catch(error){
     core.setFailed(error.message);
