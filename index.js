@@ -59,11 +59,14 @@ const checkTaskStatus = async (ceTaskUrl, token) => {
         throw new Error('[checkTaskStatus] 10 min timed out!!!')
       }
 
+      console.log(`[${ceTaskUrl}] send!!!`);
       const res = await http.get(ceTaskUrl)
-      const body = JSON.parse(await res.readBody())
+      const bodyString = await res.readBody()
+      
+      const body = JSON.parse(bodyString)
       console.log(`[${ceTaskUrl}]\n${JSON.stringify(body, undefined, 2)}`);
 
-      const status = body.projectStatus.status
+      const status = body.task.status
 
       if(status != 'PENDING' && status != 'IN_PROGRESS'){
         clearInterval(inter)
