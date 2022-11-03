@@ -19,7 +19,7 @@ try{
   const homePath = `/home/runner/work/${github.context.issue.repo}/${github.context.issue.repo}`
   console.log('home path => '+homePath);
   console.log('find taskFile => '+taskFilePath);
-  const taskFileString = fs.readFileSync(path.resolve(home, taskFilePath), {encoding:'utf8'})
+  const taskFileString = fs.readFileSync(path.resolve(homePath, taskFilePath), {encoding:'utf8'})
   console.log('taskFileString =>\n'+taskFileString);
   
   const octo = github.getOctokit(token)
