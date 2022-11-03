@@ -9701,7 +9701,8 @@ try{
   console.log(`inputs => key:${key} / host:${host} / login:${login}`);
   
   //get task file
-  const taskFilePath = '.scannerwork/report-task.txt'
+  const taskFilePath = '../.scannerwork/report-task.txt'
+  console.log('find taskFile => '+taskFilePath);
   const taskFileString = fs.readFileSync(path.resolve(__dirname, taskFilePath), {encoding:'utf8'})
   console.log('taskFileString =>\n'+taskFileString);
   
