@@ -12,6 +12,9 @@ inputs:
     default: bugs,security_hotspots
   github.token:
     required: true
+  errorOnFail:
+    required: false
+    default: true
 outputs:
   comment: 
     description: 'comment contents'

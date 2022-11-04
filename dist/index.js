@@ -9699,6 +9699,7 @@ const sonarLogin = core.getInput('sonar.login');
 const sonarMetric = core.getInput('sonar.metric')
 const sonarMetricList = sonarMetric.split(',')
 const githubToken = core.getInput('github.token')
+const errorOnFail = core.getInput('errorOnFail')
 
 console.log(`inputs => key:${key} / host:${host} / login:${sonarLogin} / sonarMetric:${sonarMetric}`);
 
@@ -9851,7 +9852,7 @@ const run = async () => {
       body:comment.toString()
     })
 
-    if(failed){
+    if(errorOnFail == 'true' && failed){
       core.setFailed('SonarQube Check Result Failed !!!');
     }
 
