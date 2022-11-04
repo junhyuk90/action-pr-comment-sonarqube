@@ -9771,10 +9771,10 @@ const run = async () => {
           taskDetailMap.set(dataElem.path, dataElem)
         }
       })
-      
+
     }
 
-    const taskDetail = taskDetailMap.values()
+    const taskDetail = Array.from(taskDetailMap.values())
     
     //List pull requests files
     const prFiles = await octo.rest.pulls.listFiles({
@@ -9870,8 +9870,9 @@ const getTaskDetail = async (componentKey, metric) => {
     pageNo += 1
     console.log(`[TaskDetailApi] pageNo:${pageNo} metric:${metric} api start`)
     const {components} = await taskDetailApi(componentKey, metric, pageNo)
+    console.log('components => '+JSON.stringify(components))
     if(!components || components.length == 0){
-      console.log(`[TaskDetailApi] end search (pageNo:${pageNo})`)
+      console.log(`[TaskDetailApi] end search (pageNo:${pageNo}) components not found`)
       break;
     }
 
@@ -9884,7 +9885,7 @@ const getTaskDetail = async (componentKey, metric) => {
     if(availableData && availableData.length > 0){
       result.push(...availableData)
     }else{
-      console.log(`[TaskDetailApi] end search (pageNo:${pageNo})`)
+      console.log(`[TaskDetailApi] end search (pageNo:${pageNo}) availableData not found`)
       break;
     }
     
