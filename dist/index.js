@@ -9701,7 +9701,7 @@ const sonarMetricList = sonarMetric.split(',')
 const githubToken = core.getInput('github.token')
 const errorOnFail = core.getInput('errorOnFail')
 
-console.log(`inputs => key:${key} / host:${host} / login:${sonarLogin} / sonarMetric:${sonarMetric}`);
+console.log(`inputs => key:${key} / host:${host} / login:${sonarLogin} / sonarMetric:${sonarMetric} / errorOnFail:${errorOnFail}`);
 
 //http
 const authHandler = new BasicCredentialHandler(sonarLogin, "")
@@ -9802,14 +9802,17 @@ const run = async () => {
     taskDetail.forEach((elem)=>{
       console.log('[from sonar file] '+elem.path);
       if(elem.total > 0 && prFileNames.filter((fname)=>{return elem.path == fname}).length > 0){
+
         failed = true
         failedCount += 1
         let filestr = `${elem.path}`
-        elem.measures.forEach((measure)=>{
-          filestr += ` | ${measure.value}`
-          console.log(`filestr added ${measure.metric} ${measure.value}`)
-        })
+        for(let tempMetric of sonarMetricList){
+          const filteredMetric = elem.measures.filter(mea=>mea.metric == tempMetric)
+          filestr += ` | ${filteredMetric && filteredMetric[0]?filteredMetric[0].value:'0'}`
+        }
+        
         failedFiles.push(filestr)
+
       }
     })
 
