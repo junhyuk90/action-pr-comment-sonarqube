@@ -9696,9 +9696,11 @@ const path = __nccwpck_require__(1017);
 const key = core.getInput('sonar.projectKey');
 const host = core.getInput('sonar.host.url');
 const sonarLogin = core.getInput('sonar.login');
+const sonarMetric = core.getInput('sonar.metric')
+const sonarMetricList = sonarMetric.split(',')
 const githubToken = core.getInput('github.token')
 
-console.log(`inputs => key:${key} / host:${host} / login:${sonarLogin}`);
+console.log(`inputs => key:${key} / host:${host} / login:${sonarLogin} / sonarMetric:${sonarMetric}`);
 
 //http
 const authHandler = new BasicCredentialHandler(sonarLogin, "")
@@ -9745,9 +9747,32 @@ const run = async () => {
     comment.add('```java')
     comment.add(`Task   : ${taskInfo.status}`)
     
-
     //Task detail get
-    const taskDetail = await getTaskDetail(taskInfo.componentKey)
+    const taskDetailMap = new Map()
+    sonarMetricList.forEach(async (tempMetric)=>{
+      const data = await getTaskDetail(taskInfo.componentKey, tempMetric)
+      data.forEach((dataElem)=>{
+
+        let value = 0
+        dataElem.measures.forEach((elem)=>{
+          if(elem.metric == tempMetric){
+            value = Number(elem.value)
+            return false;
+          }
+        })
+
+        let tempTaskDetail = taskDetailMap.get(dataElem.path)
+        if(tempTaskDetail){
+          tempTaskDetail.measures.push(...dataElem.measures)
+          tempTaskDetail.total += value
+        }else{
+          dataElem.total = value
+          taskDetailMap.set(dataElem.path, dataElem)
+        }
+      })
+    })
+
+    const taskDetail = taskDetailMap.values()
     
     //List pull requests files
     const prFiles = await octo.rest.pulls.listFiles({
@@ -9765,11 +9790,17 @@ const run = async () => {
     //Check PR Files Fail
     let failed = false
     const failedFiles = []
-    taskDetail.components.forEach((elem)=>{
+    let failedCount = 0
+    taskDetail.forEach((elem)=>{
       console.log('[from sonar file] '+elem.path);
-      if(Number(elem.measures[0].value) > 0 && prFileNames.filter((fname)=>{return elem.path == fname}).length > 0){
+      if(elem.total > 0 && prFileNames.filter((fname)=>{return elem.path == fname}).length > 0){
         failed = true
-        failedFiles.push(`${elem.path} | ${elem.measures[0].value}`)
+        failedCount += 1
+        let filestr = `${elem.path}`
+        elem.measures.forEach((measure)=>{
+          filestr += ` | ${measure.value}`
+        })
+        failedFiles.push(filestr)
       }
     })
 
@@ -9779,16 +9810,22 @@ const run = async () => {
     comment.add('### Summary')
     comment.add('```java')
     comment.add(`Repo Check Total : ${taskDetail.paging.total}`)
-    comment.add(`Repo Bugs  Total : ${taskDetail.baseComponent.measures[0].value}`)
-    comment.add(`This PR(${github.context.payload.pull_request.number}) Bugs : ${failedFiles.length}`)
+    comment.add(`Repo Error Total : ${taskDetail.baseComponent.measures[0].value}`)
+    comment.add(`This PR(${github.context.payload.pull_request.number}) ERRs : ${failedCount}`)
     comment.add('```')
     comment.add('')
     
     if(failed){
       
       comment.add('### Bugs Detail')
-      comment.add('|File Name|Bugs|')
-      comment.add('|--|:--:|')
+      let tableHeader = `|File Name|`
+      let tableHeaderAlign = `|--|`
+      sonarMetricList.forEach((metric)=>{
+        tableHeader += `${metric}|`
+        tableHeaderAlign += `:--:|`
+      })
+      comment.add(tableHeader)
+      comment.add(tableHeaderAlign)
       failedFiles.forEach((elem)=>{
         comment.add(elem)
       })
@@ -9820,11 +9857,55 @@ const run = async () => {
  * @param {*} componentKey 
  * @returns 
  */
-const getTaskDetail = async (componentKey) => {
+const getTaskDetail = async (componentKey, metric) => {
 
-  const res = await http.get(`${host}/api/measures/component_tree?component=${componentKey}&metricKeys=bugs&qualifiers=FIL,TRK`)
+  const result = []
+
+  let pageNo = 0
+  const time = new Date().getTime()
+  while(new Date().getTime() - time < 3000){ //최대 3초까지만
+
+    pageNo += 1
+    console.log(`[TaskDetailApi] pageNo:${pageNo} metric:${metric} api start`)
+    const {components} = await taskDetailApi(componentKey, metric, pageNo)
+    if(!components || components.length == 0){
+      console.log(`[TaskDetailApi] end search (pageNo:${pageNo})`)
+      break;
+    }
+
+    const availableData = components.map((elem)=>{
+      if(Number(elem.measures[0].value) > 0){
+        return elem
+      }
+    })
+
+    if(availableData && availableData.length > 0){
+      result.push(...availableData)
+    }else{
+      console.log(`[TaskDetailApi] end search (pageNo:${pageNo})`)
+      break;
+    }
+    
+  }
+
+  return result
+
+}
+
+const taskDetailApi = async (componentKey, metric, pageNo) => {
+
+  const res = await http.get(`${host}/api/measures/component_tree
+  ?component=${componentKey}
+  &p=${pageNo}
+  &ps=2
+  &metricKeys=${metric}
+  &qualifiers=FIL,TRK
+  &metricSortFilter=withMeasuresOnly
+  &metricSort=${metric}
+  &s=metric
+  &asc=false`)
   const bodyString = await res.readBody()
-  return JSON.parse(bodyString)
+  return bodyString?JSON.parse(bodyString):{}
 
 }
 

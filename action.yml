@@ -7,6 +7,9 @@ inputs:
     required: true
   sonar.login:
     required: true
+  sonar.metric:
+    required: false
+    default: bugs,security_hotspots
   github.token:
     required: true
 outputs:
