@@ -9760,6 +9760,8 @@ const run = async () => {
       return ff.filename
     })
 
+    console.log('prFileNames => '+JSON.stringify(prFileNames))
+
     //Check PR Files Fail
     let failed = false
     const failedFiles = []
