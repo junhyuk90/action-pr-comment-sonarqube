@@ -9749,10 +9749,13 @@ const run = async () => {
     
     //Task detail get
     const taskDetailMap = new Map()
+    let paging;
     for(let tempMetric of sonarMetricList){
 
       const data = await getTaskDetail(taskInfo.componentKey, tempMetric)
-      data.forEach((dataElem)=>{
+      !paging && (paging = data.paging)
+      paging.errTotal = 0
+      data.list.forEach((dataElem)=>{
 
         let value = 0
         dataElem.measures.forEach((elem)=>{
@@ -9766,8 +9769,10 @@ const run = async () => {
         if(tempTaskDetail){
           tempTaskDetail.measures.push(...dataElem.measures)
           tempTaskDetail.total += value
+          paging.errTotal += value
         }else{
           dataElem.total = value
+          paging.errTotal += value
           taskDetailMap.set(dataElem.path, dataElem)
         }
       })
@@ -9811,8 +9816,8 @@ const run = async () => {
     comment.add('')
     comment.add('### Summary')
     comment.add('```java')
-    comment.add(`Repo Check Total : ${taskDetail.paging.total}`)
-    comment.add(`Repo Error Total : ${taskDetail.baseComponent.measures[0].value}`)
+    comment.add(`Repo Check Total : ${paging.total}`)
+    comment.add(`Repo Error Total : ${paging.errTotal}`)
     comment.add(`This PR(${github.context.payload.pull_request.number}) ERRs : ${failedCount}`)
     comment.add('```')
     comment.add('')
@@ -9861,7 +9866,10 @@ const run = async () => {
  */
 const getTaskDetail = async (componentKey, metric) => {
 
-  const result = []
+  const result = {
+    paging:undefined,
+    list:[]
+  }
 
   let pageNo = 0
   const time = new Date().getTime()
@@ -9869,8 +9877,9 @@ const getTaskDetail = async (componentKey, metric) => {
 
     pageNo += 1
     console.log(`[TaskDetailApi] pageNo:${pageNo} metric:${metric} api start`)
-    const {components} = await taskDetailApi(componentKey, metric, pageNo)
+    const {paging, components} = await taskDetailApi(componentKey, metric, pageNo)
     console.log('components => '+JSON.stringify(components))
+    result.paging = paging
     if(!components || components.length == 0){
       console.log(`[TaskDetailApi] end search (pageNo:${pageNo}) components not found`)
       break;
@@ -9883,7 +9892,7 @@ const getTaskDetail = async (componentKey, metric) => {
     })
 
     if(availableData && availableData.length > 0){
-      result.push(...availableData)
+      result.list.push(...availableData)
     }else{
       console.log(`[TaskDetailApi] end search (pageNo:${pageNo}) availableData not found`)
       break;
@@ -9897,16 +9906,7 @@ const getTaskDetail = async (componentKey, metric) => {
 
 const taskDetailApi = async (componentKey, metric, pageNo) => {
 
-  const res = await http.get(`${host}/api/measures/component_tree
-  ?component=${componentKey}
-  &p=${pageNo}
-  &ps=2
-  &metricKeys=${metric}
-  &qualifiers=FIL,TRK
-  &metricSortFilter=withMeasuresOnly
-  &metricSort=${metric}
-  &s=metric
-  &asc=false`)
+  const res = await http.get(`${host}/api/measures/component_tree?component=${componentKey}&p=${pageNo}&ps=2&metricKeys=${metric}&qualifiers=FIL,TRK&metricSortFilter=withMeasuresOnly&metricSort=${metric}&s=metric&asc=false`)
   const bodyString = await res.readBody()
   return bodyString?JSON.parse(bodyString):{}
 
