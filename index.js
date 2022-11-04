@@ -100,7 +100,8 @@ const run = async () => {
     const prFiles = await octo.rest.pulls.listFiles({
       owner:github.context.issue.owner,
       repo:github.context.issue.repo,
-      pull_number:github.context.payload.pull_request.number
+      pull_number:github.context.payload.pull_request.number,
+      per_page:100,
     })
 
     const prFileNames = prFiles.data.map((ff)=>{
