@@ -9767,7 +9767,7 @@ const run = async () => {
     const failedFiles = []
     taskDetail.components.forEach((elem)=>{
       console.log('[from sonar file] '+elem.path);
-      if(Number(elem.measures[0].value) > 0 && prFileNames.filter((fname)=>{return elem.path.includes(fname)}).length > 0){
+      if(Number(elem.measures[0].value) > 0 && prFileNames.filter((fname)=>{return elem.path == fname}).length > 0){
         failed = true
         failedFiles.push(`${elem.path} | ${elem.measures[0].value}`)
       }
