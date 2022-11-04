@@ -199,13 +199,14 @@ const getTaskDetail = async (componentKey, metric) => {
       break;
     }
 
-    const availableData = components.map((elem)=>{
+    const availableData = []
+    components.forEach((elem)=>{
       if(Number(elem.measures[0].value) > 0){
-        return elem
+        availableData.push(elem)
       }
     })
 
-    if(availableData && availableData.length > 0){
+    if(availableData.length > 0){
       result.list.push(...availableData)
     }else{
       console.log(`[TaskDetailApi] end search (pageNo:${pageNo}) availableData not found`)
