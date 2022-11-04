@@ -9749,7 +9749,8 @@ const run = async () => {
     
     //Task detail get
     const taskDetailMap = new Map()
-    sonarMetricList.forEach(async (tempMetric)=>{
+    for(let tempMetric of sonarMetricList){
+
       const data = await getTaskDetail(taskInfo.componentKey, tempMetric)
       data.forEach((dataElem)=>{
 
@@ -9770,7 +9771,8 @@ const run = async () => {
           taskDetailMap.set(dataElem.path, dataElem)
         }
       })
-    })
+      
+    }
 
     const taskDetail = taskDetailMap.values()
     
