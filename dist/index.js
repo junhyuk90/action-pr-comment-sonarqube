@@ -9806,6 +9806,7 @@ const run = async () => {
         let filestr = `${elem.path}`
         elem.measures.forEach((measure)=>{
           filestr += ` | ${measure.value}`
+          console.log(`filestr added ${measure.metric} ${measure.value}`)
         })
         failedFiles.push(filestr)
       }
