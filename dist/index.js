@@ -9798,17 +9798,19 @@ const run = async () => {
     //Check PR Files Fail
     let failed = false
     const failedFiles = []
+    let failedFileCount = 0
     let failedCount = 0
     taskDetail.forEach((elem)=>{
       console.log('[from sonar file] '+elem.path);
       if(elem.total > 0 && prFileNames.filter((fname)=>{return elem.path == fname}).length > 0){
 
         failed = true
-        failedCount += 1
+        failedFileCount += 1
         let filestr = `${elem.path}`
         for(let tempMetric of sonarMetricList){
           const filteredMetric = elem.measures.filter(mea=>mea.metric == tempMetric)
           filestr += ` | ${filteredMetric && filteredMetric[0]?filteredMetric[0].value:'0'}`
+          filteredMetric && filteredMetric[0] && (failedCount += Number(filteredMetric[0].value))
         }
         
         failedFiles.push(filestr)
@@ -9819,11 +9821,10 @@ const run = async () => {
     comment.add(`Result : ${failed?'FAIL ❌':'PASS 🟢'}`)
     comment.add('```')
     comment.add('')
-    comment.add('### Summary')
+    comment.add(`### Summary of PR (${github.context.payload.pull_request.number})`)
     comment.add('```java')
-    comment.add(`Repo Check Total : ${paging.total}`)
-    comment.add(`Repo Error Total : ${paging.errTotal}`)
-    comment.add(`This PR(${github.context.payload.pull_request.number}) ERRs : ${failedCount}`)
+    comment.add(`Error Files Total : ${failedFileCount}`)
+    comment.add(`Error Count Total : ${failedCount}`)
     comment.add('```')
     comment.add('')
     
