@@ -229,7 +229,9 @@ const getTaskDetail = async (componentKey, metric) => {
 
 const taskDetailApi = async (componentKey, metric, pageNo) => {
 
-  const res = await http.get(`${host}/api/measures/component_tree?component=${componentKey}&p=${pageNo}&ps=2&metricKeys=${metric}&qualifiers=FIL,TRK&metricSortFilter=withMeasuresOnly&metricSort=${metric}&s=metric&asc=false`)
+  const url = `${host}/api/measures/component_tree?component=${componentKey}&p=${pageNo}&ps=2&metricKeys=${metric}&qualifiers=FIL,TRK&metricSortFilter=withMeasuresOnly&metricSort=${metric}&s=metric&asc=false`
+  console.log('[request] ', url)
+  const res = await http.get(url)
   const bodyString = await res.readBody()
   console.log('taskDetailApi received => '+bodyString)
   return bodyString?JSON.parse(bodyString):{}
