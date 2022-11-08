@@ -9694,7 +9694,8 @@ const path = __nccwpck_require__(1017);
 
 //inputs
 const key = core.getInput('sonar.projectKey');
-const host = core.getInput('sonar.host.url');
+let host = core.getInput('sonar.host.url');
+host && host.endsWith('/') && (host = host.substring(0, host.length - 1)) //뒤에 / 제거
 const sonarLogin = core.getInput('sonar.login');
 const sonarMetric = core.getInput('sonar.metric')
 const sonarMetricList = sonarMetric.split(',')
@@ -9919,7 +9920,8 @@ const taskDetailApi = async (componentKey, metric, pageNo) => {
   console.log('[request] ', url)
   const res = await http.get(url)
   const bodyString = await res.readBody()
-  console.log('taskDetailApi received => '+bodyString)
+  //console.log('taskDetailApi received => '+bodyString)
+  
   return bodyString?JSON.parse(bodyString):{}
 
 }
