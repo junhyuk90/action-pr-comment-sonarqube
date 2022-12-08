@@ -96,16 +96,23 @@ const run = async () => {
     }
 
     const taskDetail = Array.from(taskDetailMap.values())
-    
-    //List pull requests files
-    const prFiles = await octo.rest.pulls.listFiles({
+
+    //List all files on repogitory
+    const allFiles = await octo.rest.repos.getContent({
       owner:github.context.issue.owner,
       repo:github.context.issue.repo,
-      pull_number:github.context.payload.pull_request.number,
       per_page:100,
     })
+    
+    //List pull requests files
+    // const prFiles = await octo.rest.pulls.listFiles({
+    //   owner:github.context.issue.owner,
+    //   repo:github.context.issue.repo,
+    //   pull_number:github.context.payload.pull_request.number,
+    //   per_page:100,
+    // })
 
-    const prFileNames = prFiles.data.map((ff)=>{
+    const prFileNames = allFiles.data.map((ff)=>{
       return ff.filename
     })
 
