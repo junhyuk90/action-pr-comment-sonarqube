@@ -101,6 +101,7 @@ const run = async () => {
     const allFiles = await octo.rest.repos.getContent({
       owner:github.context.issue.owner,
       repo:github.context.issue.repo,
+      path:'**/*',
       per_page:100,
     })
     
